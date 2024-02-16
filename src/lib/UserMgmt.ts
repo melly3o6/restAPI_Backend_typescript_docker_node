@@ -67,7 +67,7 @@ export default class UserMgmt {
             
             return new Promise(() => {
                 DB.pool.query<ResultSetHeader>(
-                    `INSERT INTO ${UserMgmt.table} (id, username, surname, lastname, email, password, admin)
+                    `INSERT INTO ${UserMgmt.table} (id, username, surname, lastname, email, password, admin, created_at)
                      VALUES(?,?,?,?,?,?)`,
                      [id, user.username, user.surname, user.lastname, user.email, hashedPassword, user.admin], 
                      console.error

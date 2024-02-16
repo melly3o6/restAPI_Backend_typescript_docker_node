@@ -13,7 +13,7 @@ const UserEndpoints: Array<IApiEndpoint> = [
         method: EHttpMethod.GET,
         handler: async function(req: Request, res: Response): Promise<Response> {
             return res.status(StatusCodes.OK).send({
-                message: "Welcome to the MyCode Homepage!"
+                message: process.env.WELCOME_MESSAGE
             });
         }
     },
@@ -46,7 +46,7 @@ const UserEndpoints: Array<IApiEndpoint> = [
         }
     },
     {
-        url: "/api/user",
+        url: "/api/register",
         method: EHttpMethod.POST,
         handler: async function(req: Request, res: Response): Promise<Response> {
             try
