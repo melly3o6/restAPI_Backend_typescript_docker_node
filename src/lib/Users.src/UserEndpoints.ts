@@ -53,7 +53,7 @@ const UserEndpoints: Array<IApiEndpoint> = [
             {
                 if (
                     req.body.username != undefined
-                    && req.body.name != undefined
+                    && req.body.surname != undefined
                     && req.body.lastname != undefined
                     && req.body.email != undefined
                     && req.body.password != undefined
@@ -63,7 +63,7 @@ const UserEndpoints: Array<IApiEndpoint> = [
                         constructor: {name: "RowDataPacket"},
 
                         username: `${req.body.username}`,
-                        surname: `${req.body.name}`,
+                        surname: `${req.body.surname}`,
                         lastname: `${req.body.lastname}`,
                         email: `${req.body.email}`,
                         password: `${req.body.password}`

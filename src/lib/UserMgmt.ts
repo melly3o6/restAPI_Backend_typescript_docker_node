@@ -5,13 +5,13 @@ import bcrypt from 'bcryptjs';
 import {v4 as random} from 'uuid';
 
 export default class UserMgmt {
-    public static table: string = "user"
+    public static table: string = "users"
 
     public static init(): void {
         DB.init();
         DB.createTableUser();
 
-        UserMgmt.table = (process.env.DB_USER_TABLE ? process.env.DB_USER_TABLE : "user");
+        UserMgmt.table = (process.env.DB_USER_TABLE ? process.env.DB_USER_TABLE : "users");
     }
 
     public static async getAllUser(): Promise<IUser[]> {
@@ -63,12 +63,15 @@ export default class UserMgmt {
 
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(user.password, salt);
-
+            console.log(user);
+            
             return new Promise(() => {
                 DB.pool.query<ResultSetHeader>(
                     `INSERT INTO ${UserMgmt.table} (id, username, surname, lastname, email, password, admin)
                      VALUES(?,?,?,?,?,?)`,
-                     [id, user.username, user.surname, user.lastname, user.email, hashedPassword, user.admin]);
+                     [id, user.username, user.surname, user.lastname, user.email, hashedPassword, user.admin], 
+                     console.error
+                    );
                 }
             )
             

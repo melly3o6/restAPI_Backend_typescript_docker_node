@@ -73,7 +73,7 @@ export default class DB {
                         throw queryErr;
                     }
 
-                    console.debug('User table created successfully');
+                    console.debug('Users table created successfully');
                 });
             });
         } catch (error) {
