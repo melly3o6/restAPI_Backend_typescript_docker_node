@@ -9,9 +9,9 @@ export default class UserMgmt {
 
     public static init(): void {
         DB.init();
-        DB.checkPool();
+        DB.createTableUser();
 
-        UserMgmt.table = (process.env.DB_USER_TABLE ? process.env.DB_USER_TABLE : "users");
+        UserMgmt.table = (process.env.DB_USER_TABLE ? process.env.DB_USER_TABLE : "user");
     }
 
     public static async getAllUser(): Promise<IUser[]> {
@@ -51,6 +51,7 @@ export default class UserMgmt {
 
     public static async createUser(user: IUser): Promise<IUser | undefined> {
         try {
+
             let id = random();
 
             let check_user = await this.getUserById(id);
@@ -73,6 +74,16 @@ export default class UserMgmt {
             
         } catch (error) {
             console.error('An error occured while creating user: ', error);
+        }
+    }
+
+    public static async comparePassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
+        try {
+            const match = await bcrypt.compare(plainPassword, hashedPassword);
+            return match;
+        } catch (error) {
+            console.error('Error comparing passwords:', error);
+            return false;
         }
     }
 

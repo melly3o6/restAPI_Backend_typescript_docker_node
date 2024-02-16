@@ -1,6 +1,7 @@
 import { createPool, Pool } from 'mysql2';
 import dotenv from 'dotenv';
 
+
 dotenv.config()
 
 export default class DB {
@@ -38,6 +39,46 @@ export default class DB {
         }
         catch (error) {
             console.error('[mysql.connector][Pool][Error]', error)
+        }
+    }
+
+    public static createTableUser(): void {
+        try {
+            DB.checkPool();
+
+            DB.pool.getConnection((err, connection) => {
+                if (err) {
+                    console.error('[mysql.connector][Connection][Error]', err);
+                    throw err;
+                }
+
+                const createUserTableQuery = `
+                    CREATE TABLE IF NOT EXISTS users (
+                        id VARCHAR(255) PRIMARY KEY,
+                        username VARCHAR(255) NOT NULL,
+                        surname VARCHAR(255) NOT NULL,
+                        lastname VARCHAR(255) NOT NULL,
+                        email VARCHAR(255) NOT NULL,
+                        password VARCHAR(255) NOT NULL,
+                        admin BOOLEAN,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                `;
+
+                connection.query(createUserTableQuery, (queryErr) => {
+                    connection.release();
+
+                    if (queryErr) {
+                        console.error('[mysql.connector][Query][Error]', queryErr);
+                        throw queryErr;
+                    }
+
+                    console.debug('User table created successfully');
+                });
+            });
+        } catch (error) {
+            console.error('[mysql.connector][createTableUser][Error]', error);
+            throw error;
         }
     }
 }

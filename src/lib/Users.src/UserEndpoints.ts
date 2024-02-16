@@ -57,7 +57,6 @@ const UserEndpoints: Array<IApiEndpoint> = [
                     && req.body.lastname != undefined
                     && req.body.email != undefined
                     && req.body.password != undefined
-                    && req.body.admin != undefined
                 )
                 {
                     const user: IUser = {
@@ -67,9 +66,7 @@ const UserEndpoints: Array<IApiEndpoint> = [
                         surname: `${req.body.name}`,
                         lastname: `${req.body.lastname}`,
                         email: `${req.body.email}`,
-                        password: `${req.body.password}`,
-                        admin: (req.body.admin == typeof(Boolean) && req.body.admin ? true : false)
-
+                        password: `${req.body.password}`
                     }
 
                     UserMgmt.createUser(user);
