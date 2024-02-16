@@ -1,7 +1,6 @@
 import { createPool, Pool } from 'mysql2';
 import dotenv from 'dotenv';
 
-
 dotenv.config()
 
 export default class DB {
@@ -60,7 +59,8 @@ export default class DB {
                         firstname VARCHAR(255) NOT NULL,
                         email VARCHAR(255) NOT NULL,
                         password VARCHAR(255) NOT NULL,
-                        admin BOOLEAN,
+                        roleId INT,
+                        FOREIGN KEY (roleId) REFERENCES role(id),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 `;
@@ -78,6 +78,43 @@ export default class DB {
             });
         } catch (error) {
             console.error('[mysql.connector][createTableUser][Error]', error);
+            throw error;
+        }
+    }
+
+    public static createTableRole(): void {
+        try 
+        {
+            DB.checkPool();
+
+            DB.pool.getConnection((err, connection) => {
+                if (err) {
+                    console.error('[mysql.connector][Connection][Error]', err);
+                    throw err;
+                }
+
+                const createRoleTableQuery = `
+                    CREATE TABLE IF NOT EXISTS role (
+                        id INT PRIMARY KEY AUTO_INCREMENT,
+                        role VARCHAR(10)
+                    )
+                `;
+
+                connection.query(createRoleTableQuery, (queryErr) => {
+                    connection.release();
+
+                    if (queryErr) {
+                        console.error('[mysql.connector][Query][Error]', queryErr);
+                        throw queryErr;
+                    }
+
+                    console.debug('Role table created successfully');
+                });
+            });
+        } 
+        catch (error) 
+        {
+            console.error('[mysql.connector][createTableRole][Error]', error);
             throw error;
         }
     }

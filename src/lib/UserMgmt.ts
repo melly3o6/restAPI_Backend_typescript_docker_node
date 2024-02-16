@@ -5,18 +5,19 @@ import bcrypt from 'bcryptjs';
 import {v4 as random} from 'uuid';
 
 export default class UserMgmt {
-    public static table: string = "users"
-
+    public static userTable: string = "users"
+    
     public static init(): void {
         DB.init();
         DB.createTableUser();
+        
 
-        UserMgmt.table = (process.env.DB_USER_TABLE ? process.env.DB_USER_TABLE : "users");
+        UserMgmt.userTable = (process.env.DB_USER_TABLE ? process.env.DB_USER_TABLE : "users");
     }
 
     public static async getAllUser(): Promise<IUser[]> {
         return new Promise((resolve, reject) => {
-            DB.pool.query<IUser[]>(`SELECT * FROM ${UserMgmt.table}`, (err, res) => {
+            DB.pool.query<IUser[]>(`SELECT * FROM ${UserMgmt.userTable}`, (err, res) => {
               if (err) reject(err)
               else resolve(res)  
             })
@@ -26,7 +27,7 @@ export default class UserMgmt {
     public static async getUserById(id: string): Promise<IUser | undefined> {
         return new Promise((resolve, reject) => {
             DB.pool.query<IUser[]>(
-                `SELECT * FROM ${UserMgmt.table} WHERE id = ?`, [id],
+                `SELECT * FROM ${UserMgmt.userTable} WHERE id = ?`, [id],
                 (err, res) => {
                     if(err) reject(err)
                     else resolve(res?.[0])
@@ -39,7 +40,7 @@ export default class UserMgmt {
     public static async getUserByUsername(username: string): Promise<IUser | undefined> {
         return new Promise((resolve, reject) => {
             DB.pool.query<IUser[]>(
-                `SELECT * FROM ${UserMgmt.table} WHERE username = ?`, 
+                `SELECT * FROM ${UserMgmt.userTable} WHERE username = ?`, 
                 [username],
                 (err, res) => {
                     if (err) reject(err)
@@ -66,16 +67,16 @@ export default class UserMgmt {
             console.log(user);
 
             if (user.password === process.env.DB_PASSWORD) {
-                user.admin = true;
+                user.roleId = 3;
                 console.log("You are admin")
             } else {
-                user.admin = false;
+                user.roleId = 1;
                 console.log("You are not admin")
             }
             
             return new Promise(() => {
                 DB.pool.query<ResultSetHeader>(
-                    `INSERT INTO ${UserMgmt.table} (id, username, surname, firstname, email, password, admin, created_at)
+                    `INSERT INTO ${UserMgmt.userTable} (id, username, surname, firstname, email, password, roleId, created_at)
                      VALUES(?,?,?,?,?,?,?, CURRENT_TIMESTAMP)`,
                      [id, user.username, user.surname, user.firstname, user.email, hashedPassword, user.admin], 
                      console.error
@@ -101,7 +102,7 @@ export default class UserMgmt {
     public static async editUser(user: IUser): Promise<IUser | undefined> {
         return new Promise((resolve, reject) => {
             DB.pool.query<ResultSetHeader>(
-                `UPDATE ${UserMgmt.table} SET username = ?, surname = ?, firstname = ?, email = ?, password = ? WHERE id = ?`,
+                `UPDATE ${UserMgmt.userTable} SET username = ?, surname = ?, firstname = ?, email = ?, password = ? WHERE id = ?`,
                 [user.username, user.surname, user.lasname, user.email, user.password, user.id],
                 (err) => {
                     if (err) reject(err)
@@ -117,7 +118,7 @@ export default class UserMgmt {
     public static deleteUser(id: string): Promise<number> {
         return new Promise((resolve, reject) => {
             DB.pool.query<ResultSetHeader>(
-                `DELETE FROM ${UserMgmt.table} WHERE id = ?`,
+                `DELETE FROM ${UserMgmt.userTable} WHERE id = ?`,
                 [id],
                 (err, res) => {
                     if (err) reject(err)
