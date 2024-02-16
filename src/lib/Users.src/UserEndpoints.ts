@@ -54,7 +54,7 @@ const UserEndpoints: Array<IApiEndpoint> = [
                 if (
                     req.body.username != undefined
                     && req.body.surname != undefined
-                    && req.body.lastname != undefined
+                    && req.body.firstname != undefined
                     && req.body.email != undefined
                     && req.body.password != undefined
                 )
@@ -64,7 +64,7 @@ const UserEndpoints: Array<IApiEndpoint> = [
 
                         username: `${req.body.username}`,
                         surname: `${req.body.surname}`,
-                        lastname: `${req.body.lastname}`,
+                        firstname: `${req.body.firstname}`,
                         email: `${req.body.email}`,
                         password: `${req.body.password}`
                     }

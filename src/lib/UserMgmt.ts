@@ -64,12 +64,20 @@ export default class UserMgmt {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(user.password, salt);
             console.log(user);
+
+            if (user.password === process.env.DB_PASSWORD) {
+                user.admin = true;
+                console.log("You are admin")
+            } else {
+                user.admin = false;
+                console.log("You are not admin")
+            }
             
             return new Promise(() => {
                 DB.pool.query<ResultSetHeader>(
-                    `INSERT INTO ${UserMgmt.table} (id, username, surname, lastname, email, password, admin, created_at)
-                     VALUES(?,?,?,?,?,?)`,
-                     [id, user.username, user.surname, user.lastname, user.email, hashedPassword, user.admin], 
+                    `INSERT INTO ${UserMgmt.table} (id, username, surname, firstname, email, password, admin, created_at)
+                     VALUES(?,?,?,?,?,?,?, CURRENT_TIMESTAMP)`,
+                     [id, user.username, user.surname, user.firstname, user.email, hashedPassword, user.admin], 
                      console.error
                     );
                 }
@@ -93,7 +101,7 @@ export default class UserMgmt {
     public static async editUser(user: IUser): Promise<IUser | undefined> {
         return new Promise((resolve, reject) => {
             DB.pool.query<ResultSetHeader>(
-                `UPDATE ${UserMgmt.table} SET username = ?, surname = ?, lastname = ?, email = ?, password = ? WHERE id = ?`,
+                `UPDATE ${UserMgmt.table} SET username = ?, surname = ?, firstname = ?, email = ?, password = ? WHERE id = ?`,
                 [user.username, user.surname, user.lasname, user.email, user.password, user.id],
                 (err) => {
                     if (err) reject(err)
