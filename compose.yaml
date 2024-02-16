@@ -1,0 +1,21 @@
+version: '3'
+
+volumes:
+  um_mysql_vol:
+    driver: local
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: user_db_container_mysql
+    restart: no
+    ports:
+      - '3306:3306'
+    volumes:
+      - .database:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=R00t
+      - MYSQL_DATABASE=user_mgmt_db
+      - MYSQL_USER=DBuser
+      - MYSQL_PASSWORD=DBp@ssw0rd
+    
